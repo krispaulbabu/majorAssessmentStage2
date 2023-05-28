@@ -1,0 +1,95 @@
+Running client with config12-long-med.xml
+Running client with config12-med-alt.xml
+Running client with config12-med-med.xml
+Running client with config12-short-med.xml
+Running client with config16-long-high.xml
+Running client with config16-long-med.xml
+Running client with config16-med-high.xml
+Running client with config16-short-high.xml
+Running client with config16-short-med.xml
+Running client with config40-long-high.xml
+Running client with config40-long-med.xml
+Running client with config40-med-high.xml
+Running client with config40-med-med.xml
+Running client with config40-short-high.xml
+Running client with config40-short-med.xml
+
+Turnaround time
+Config                      |FF        |BF        |FFQ       |BFQ       |WFQ       |Yours     
+config12-long-med.xml       |2400      |2397      |2802      |2630      |6880      |[31m107938[0m    
+config12-med-alt.xml        |388       |373       |813       |698       |3804      |[31m85856[0m     
+config12-med-med.xml        |654       |653       |893       |831       |4576      |[31m105055[0m    
+config12-short-med.xml      |61        |60        |106       |100       |677       |[31m14878[0m     
+config16-long-high.xml      |3123      |4674      |6536      |6666      |23972     |[31m551757[0m    
+config16-long-med.xml       |2548      |2562      |3997      |3778      |19538     |[31m401839[0m    
+config16-med-high.xml       |3749      |5328      |6123      |5494      |23740     |[31m552037[0m    
+config16-short-high.xml     |3215      |8260      |5517      |4369      |24814     |[31m522839[0m    
+config16-short-med.xml      |699       |851       |1952      |1972      |17139     |[31m393970[0m    
+config40-long-high.xml      |4506      |4164      |3642      |3568      |8461      |[31m419344[0m    
+config40-long-med.xml       |3553      |3553      |3553      |3553      |5928      |[31m205213[0m    
+config40-med-high.xml       |1505      |896       |940       |933       |3097      |[31m217473[0m    
+config40-med-med.xml        |941       |941       |941       |941       |1988      |[31m118556[0m    
+config40-short-high.xml     |485       |1365      |373       |301       |2817      |[31m213182[0m    
+config40-short-med.xml      |180       |182       |198       |193       |1945      |[31m165940[0m    
+[1mAverage[0m                     |[1m1867.13[0m   |[1m2417.27[0m   |[1m2559.07[0m   |[1m2401.80[0m   |[1m9958.40[0m   |[1m[31m271725.13[0m 
+Normalised (FF)             |1.0000    |1.2946    |1.3706    |1.2864    |5.3335    |145.5307  
+Normalised (BF)             |0.7724    |1.0000    |1.0587    |0.9936    |4.1197    |112.4101  
+Normalised (FFQ)            |0.7296    |0.9446    |1.0000    |0.9385    |3.8914    |106.1813  
+Normalised (BFQ)            |0.7774    |1.0064    |1.0655    |1.0000    |4.1462    |113.1340  
+Normalised (WFQ)            |0.1875    |0.2427    |0.2570    |0.2412    |1.0000    |27.2860   
+Normalised (Average)        |0.4861    |0.6294    |0.6663    |0.6253    |2.5928    |70.7482   
+
+Resource utilisation
+Config                      |FF        |BF        |FFQ       |BFQ       |WFQ       |Yours     
+config12-long-med.xml       |69.39     |66.87     |68.24     |66.45     |79.22     |[33m77.61[0m     
+config12-med-alt.xml        |66.93     |63.88     |66.46     |63.39     |49.55     |[32m78.91[0m     
+config12-med-med.xml        |66.22     |63.06     |65.92     |62.68     |71.52     |[32m75.95[0m     
+config12-short-med.xml      |61.56     |58.46     |61.32     |58.18     |61.48     |[32m66.18[0m     
+config16-long-high.xml      |79.97     |74.70     |77.70     |74.06     |66.17     |[32m93.22[0m     
+config16-long-med.xml       |68.16     |64.71     |67.59     |63.86     |65.06     |[32m90.99[0m     
+config16-med-high.xml       |77.45     |73.06     |76.10     |73.14     |48.18     |[32m92.20[0m     
+config16-short-high.xml     |76.88     |71.21     |74.44     |70.87     |50.94     |[32m91.78[0m     
+config16-short-med.xml      |66.22     |62.42     |65.54     |62.08     |61.40     |[32m90.93[0m     
+config40-long-high.xml      |85.81     |80.91     |86.34     |81.81     |79.46     |[32m95.32[0m     
+config40-long-med.xml       |72.16     |67.37     |72.16     |67.37     |76.71     |[32m84.32[0m     
+config40-med-high.xml       |83.01     |79.51     |83.87     |79.32     |67.73     |[32m86.36[0m     
+config40-med-med.xml        |72.77     |65.83     |72.77     |65.83     |79.25     |[33m78.15[0m     
+config40-short-high.xml     |86.54     |79.64     |86.68     |80.98     |78.09     |[32m96.16[0m     
+config40-short-med.xml      |77.23     |71.66     |77.18     |71.68     |87.92     |[32m92.11[0m     
+[1mAverage[0m                     |[1m74.02[0m     |[1m69.55[0m     |[1m73.49[0m     |[1m69.45[0m     |[1m68.18[0m     |[1m[32m86.01[0m     
+Normalised (FF)             |1.0000    |0.9396    |0.9928    |0.9382    |0.9211    |1.1620    
+Normalised (BF)             |1.0642    |1.0000    |1.0566    |0.9985    |0.9802    |1.2367    
+Normalised (FFQ)            |1.0072    |0.9465    |1.0000    |0.9450    |0.9278    |1.1704    
+Normalised (BFQ)            |1.0659    |1.0015    |1.0582    |1.0000    |0.9817    |1.2385    
+Normalised (WFQ)            |1.0857    |1.0202    |1.0779    |1.0186    |1.0000    |1.2616    
+Normalised (Average)        |1.0435    |0.9805    |1.0360    |0.9790    |0.9611    |1.2125    
+
+Total rental cost
+Config                      |FF        |BF        |FFQ       |BFQ       |WFQ       |Yours     
+config12-long-med.xml       |131.37    |131.75    |136.01    |133.20    |132.04    |[32m122.27[0m    
+config12-med-alt.xml        |113.25    |113.19    |115.75    |115.21    |118.77    |[32m87.58[0m     
+config12-med-med.xml        |132.82    |133.01    |134.87    |134.60    |129.86    |[32m124.79[0m    
+config12-short-med.xml      |21.50     |21.49     |21.68     |21.68     |21.00     |[32m19.70[0m     
+config16-long-high.xml      |589.16    |596.10    |632.23    |632.18    |653.30    |[32m581.30[0m    
+config16-long-med.xml       |581.93    |581.49    |600.44    |599.28    |580.79    |[32m522.21[0m    
+config16-med-high.xml       |598.42    |598.83    |632.22    |617.53    |696.20    |[32m587.12[0m    
+config16-short-high.xml     |594.10    |612.40    |635.48    |626.12    |674.29    |[33m603.24[0m    
+config16-short-med.xml      |579.43    |578.62    |592.54    |590.29    |587.31    |[32m521.06[0m    
+config40-long-high.xml      |1244.09   |1236.91   |1250.35   |1239.58   |1297.00   |[32m965.28[0m    
+config40-long-med.xml       |1025.57   |967.53    |1025.57   |967.53    |1038.16   |[32m822.14[0m    
+config40-med-high.xml       |614.35    |602.11    |605.53    |605.93    |657.50    |[32m510.71[0m    
+config40-med-med.xml        |482.74    |498.49    |482.74    |498.49    |519.24    |[32m418.61[0m    
+config40-short-high.xml     |600.37    |612.79    |601.77    |597.96    |655.30    |[32m470.38[0m    
+config40-short-med.xml      |586.94    |587.55    |592.51    |588.60    |566.19    |[32m382.50[0m    
+[1mAverage[0m                     |[1m526.40[0m    |[1m524.82[0m    |[1m537.31[0m    |[1m531.21[0m    |[1m555.13[0m    |[1m[32m449.26[0m    
+Normalised (FF)             |1.0000    |0.9970    |1.0207    |1.0091    |1.0546    |0.8535    
+Normalised (BF)             |1.0030    |1.0000    |1.0238    |1.0122    |1.0578    |0.8560    
+Normalised (FFQ)            |0.9797    |0.9767    |1.0000    |0.9886    |1.0332    |0.8361    
+Normalised (BFQ)            |0.9909    |0.9880    |1.0115    |1.0000    |1.0450    |0.8457    
+Normalised (WFQ)            |0.9483    |0.9454    |0.9679    |0.9569    |1.0000    |0.8093    
+Normalised (Average)        |0.9840    |0.9810    |1.0044    |0.9930    |1.0377    |0.8398    
+
+Final results:
+2.1: 1/1
+2.2: 0/1
+2.3: 0/7
