@@ -1,7 +1,7 @@
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
+
 
 public class MyClient {
 
@@ -17,6 +17,22 @@ public class MyClient {
 
 			String username = System.getProperty("user.name");
 			dout.write(("AUTH " + username + "\n").getBytes());
+			dis.readLine();
+
+			dout.write(("REDY\n").getBytes());
+			dis.readLine();
+
+			String allData = "";
+			dout.write(("GETS All\n").getBytes());
+			allData = dis.readLine();
+			dout.write(("OK\n").getBytes());
+
+			String[] allServers = new String[Integer.parseInt(allData.split(" ")[1])];
+			for (int i = 0; i < allServers.length; i++) {
+				allServers[i] = dis.readLine();
+			}
+
+			dout.write(("OK\n").getBytes());
 			dis.readLine();
 
 			while (true) {
@@ -35,8 +51,9 @@ public class MyClient {
 				String data = "";
 				if (!jobsIndivData[0].equals("JCPL")) {
 					dout.write(
-							("GETS Capable " + jobsIndivData[4] + " " + jobsIndivData[5] + " " + jobsIndivData[6] + "\n").getBytes());
+							("GETS Avail " + jobsIndivData[4] + " " + jobsIndivData[5] + " " + jobsIndivData[6] + "\n").getBytes());
 					data = dis.readLine();
+					dout.write(("OK\n").getBytes());
 				}
 
 				else {
@@ -45,69 +62,94 @@ public class MyClient {
 					continue;
 				}
 
-				dout.write(("OK\n").getBytes());
+				int capableCalled = 0;
+
+				if (data.split(" ")[1].equals("0")) {
+					dis.readLine();
+					dout.write(
+							("GETS Capable " + jobsIndivData[4] + " " + jobsIndivData[5] + " " + jobsIndivData[6] + "\n").getBytes());
+					data = dis.readLine();
+					dout.write(("OK\n").getBytes());
+					capableCalled = 1;
+				}
 
 				int serversPresentNo = Integer.parseInt(data.split(" ")[1]);
 
-				ArrayList<String> bootingServerNames = new ArrayList<>();
-				ArrayList<String> bootingServerIDs = new ArrayList<>();
-
-
-				for (int i = 0; i < serversPresentNo - 1; i++) {
-					String currentServer=dis.readLine();
-					String currentServername= currentServer.split(" ")[0];
-					String currentServerId=currentServer.split(" ")[1];
-					String currentServerCores=currentServer.split(" ")[4];
-
-					String nextServer= dis.readLine(); 
-					String nextServerName= nextServer.split(" ")[0];
-					String nextServerId=nextServer.split(" ")[1];
-					String nextServerCores=nextServer.split(" ")[4];
-
-					if(currentServerCores>nex){
-
-					}
-
+				String[] serverList = new String[serversPresentNo];
+				for (int i = 0; i < serversPresentNo; i++) {
+					serverList[i] = dis.readLine();
 				}
-					System.out.println("\n\n");
 
-					System.out.println(minServerName + " " + minServerId + " " + minServerCores);
-					System.out.println(neededCores);
-					System.out.println("\n\n");
+				if (capableCalled == 1) {
+					for (int i = 0; i < serverList.length; i++) {
+						String server1Name = serverList[i].split(" ")[0];
+						String server1Id = serverList[i].split(" ")[1];
+						for (int j = 0; j < allServers.length; j++) {
+							String server2Name = allServers[j].split(" ")[0];
+							String server2Id = allServers[j].split(" ")[1];
 
-					dout.write(("OK\n").getBytes());
-					dis.readLine();
-
-					if (!bootingServerNames.isEmpty()) {
-						for (int i = 0; i < bootingServerNames.size(); i++) {
-							dout.write(("LSTJ " + bootingServerNames.get(i) + " " + bootingServerIDs.get(i) + "\n").getBytes());
-							dis.readLine();
-							dout.write(("OK\n").getBytes());
-							dis.readLine();
-							dout.write(("OK\n").getBytes());
-							dis.readLine();
+							if (server1Name.equals(server2Name) && server1Id.equals(server2Id)) {
+								serverList[i] = allServers[j];
+							}
 						}
+						// System.out.println(serverList[i]);
 					}
-
-					if (jobsIndivData[0].equals("JOBN")) {
-						String schedCommand = "SCHD " + jobId + " " + minServerName + " " + minServerId;
-						dout.write((schedCommand + "\n").getBytes());
-						dis.readLine();
-					}
-
 				}
-				dout.write(("QUIT\n").getBytes());
-				dis.readLine();
-				dout.flush();
-	
-				dout.close();
-				dis.close();
-				s.close();
-			}catch(
 
-	Exception e)
-	{
-		System.out.println(e);
+				String bestServerName = "";
+				String bestServerId = "";
+				int bestServerCores = 0;
+
+				bestServerName = "";
+				bestServerId = "";
+				bestServerCores = Integer.MAX_VALUE;
+
+				for (int i = 0; i < serversPresentNo; i++) {
+					String currentSserverName = serverList[i].split(" ")[0];
+					String currentServerId = serverList[i].split(" ")[1];
+					int currentServerCores = Integer.parseInt(serverList[i].split(" ")[4]);
+
+					if (currentServerCores >= neededCores && currentServerCores <= bestServerCores) {
+						bestServerName = currentSserverName;
+						bestServerId = currentServerId;
+						bestServerCores = currentServerCores;
+						break;
+					}
+				}
+
+				dout.write(("OK\n").getBytes());
+				dis.readLine();
+
+				// if (!bootingServerNames.isEmpty()) {
+				// for (int i = 0; i < bootingServerNames.size(); i++) {
+				// dout.write(("LSTJ " + bootingServerNames.get(i) + " " +
+				// bootingServerIDs.get(i) + "\n").getBytes());
+				// dis.readLine();
+				// dout.write(("OK\n").getBytes());
+				// dis.readLine();
+				// dout.write(("OK\n").getBytes());
+				// dis.readLine();
+				// }
+				// }
+
+				if (jobsIndivData[0].equals("JOBN")) {
+					String schedCommand = "SCHD " + jobId + " " + bestServerName + " " + bestServerId;
+					dout.write((schedCommand + "\n").getBytes());
+					dis.readLine();
+				}
+
+			}
+			dout.write(("QUIT\n").getBytes());
+			dis.readLine();
+			dout.flush();
+
+			dout.close();
+			dis.close();
+			s.close();
+		} catch (
+
+		Exception e) {
+			System.out.println(e);
+		}
 	}
-}
 }
