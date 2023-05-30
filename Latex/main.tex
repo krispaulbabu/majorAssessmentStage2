@@ -1,0 +1,642 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Homework Assignment Article
+% LaTeX Template
+% Version 1.3.1 (ECL) (08/08/17)
+%
+% This template has been downloaded from:
+% Overleaf
+%
+% Original author:
+% Victor Zimmermann (zimmermann@cl.uni-heidelberg.de)
+%
+% License:
+% CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+
+\documentclass[a4paper]{article} % Uses article class in A4 format
+
+%----------------------------------------------------------------------------------------
+%	FORMATTING
+%----------------------------------------------------------------------------------------
+
+\addtolength{\hoffset}{-2.25cm}
+\addtolength{\textwidth}{4.5cm}
+\addtolength{\voffset}{-3.25cm}
+\addtolength{\textheight}{5cm}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{0in}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\usepackage{blindtext} % Package to generate dummy text
+% \usepackage[style=numeric,sorting=none]{biblatex}
+\usepackage{charter} % Use the Charter font
+\usepackage[utf8]{inputenc} % Use UTF-8 encoding
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[english]{babel} % Language hyphenation and typographical rules
+
+\usepackage{amsthm, amsmath, amssymb} % Mathematical typesetting
+\usepackage{float} % Improved interface for floating objects
+\usepackage[final, colorlinks = true, 
+            linkcolor = black, 
+            citecolor = black]{hyperref} % For hyperlinks in the PDF
+\usepackage{graphicx, multicol} % Enhanced support for graphics
+\graphicspath{ {./images/} }
+\usepackage{xcolor} % Driver-independent color extensions
+\usepackage{marvosym, wasysym} % More symbols
+\usepackage{rotating} % Rotation tools
+\usepackage{censor} % Facilities for controlling restricted text
+\usepackage{listings, style/lstlisting} % Environment for non-formatted code, !uses style file!
+\usepackage{pseudocode} % Environment for specifying algorithms in a natural way
+\usepackage{style/avm} % Environment for f-structures, !uses style file!
+\usepackage{booktabs} % Enhances quality of tables
+
+\usepackage{tikz-qtree} % Easy tree drawing tool
+\tikzset{every tree node/.style={align=center,anchor=north},
+         level distance=2cm} % Configuration for q-trees
+\usepackage{style/btree} % Configuration for b-trees and b+-trees, !uses style file!
+\usepackage{verbatimbox}
+
+% \usepackage[backend=biber,style=numeric,
+            % sorting=nyt]{biblatex} % Complete reimplementation of bibliographic facilities
+% \addbibresource{ecl.bib}
+\usepackage{csquotes} % Context sensitive quotation facilities
+
+\usepackage[yyyymmdd]{datetime} % Uses YEAR-MONTH-DAY format for dates
+\renewcommand{\dateseparator}{-} % Sets dateseparator to '-'
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{}\renewcommand{\headrulewidth}{0pt} % Blank out the default header
+\fancyfoot[L]{School of Computing, Macquarie University} % Custom footer text
+\fancyfoot[C]{} % Custom footer text
+\fancyfoot[R]{\thepage} % Custom footer text
+
+\usepackage{comment}
+\newcommand{\note}[1]{\marginpar{\scriptsize \textcolor{red}{#1}}} % Enables comments in red on margin
+
+\usepackage{hyperref}
+
+\usepackage{lmodern}
+
+% \usepackage{makeidx} 
+% \makeindex
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{COMP3100 project report} % Article title
+\fancyhead[C]{}
+\hrule \medskip % Upper rule
+\begin{minipage}{1\textwidth} % Center of title section
+\centering 
+\large % Title text size
+Project report: Stage 1\\ % Assignment title and number
+COMP3100 Distributed Systems, S2, 2022\\
+\normalsize % Subtitle text size
+SID: 46225854, Name: Kris Paul Babu
+%%%%\\ % Assignment subtitle
+\end{minipage}
+\medskip\hrule % Lower rule
+\bigskip
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+\section*{Section 1: Introduction}
+\label{sec:section1}
+In this report I will go into detail about my solution to stage 2 of the Major Assessment. In stage 2,  
+a connection is created between a simulated DS server and a client server. Which involves sending handshakes, 
+server scouting and job scheduling. The purpose of this is to demonstrate how a real life client-server 
+job scheduling would take place. On top of enabling a handshake, I will also be using my very own job scheduling algorithm 
+and compare its efficieny / baseline performance with various other job scheduling algorithm like best-fit, worst-fit, 
+first-fit, largest-round-robin etc., The goal is to design an algorithm that performs well or at the very least averages 
+the following criterions: turnaround time, resource utilisation, execution costs etc., 
+
+
+
+\subsection*{Index}
+\begin{itemize}
+    \item \hyperref[sec:section1]{Section 1: Introduction}
+    \item \hyperref[sec:section2]{Section 2: Problem definition}
+    \item \hyperref[sec:section3]{Section 3: Design}
+    \item \hyperref[sec:section4]{Section 4: Implementation}
+    \item \hyperref[sec:section5]{Section 5: References}
+    \item \hyperref[sec:section6]{Section 6: Conclusion}
+    \item \hyperref[sec:section7]{Section 7: References}
+\end{itemize}
+
+\section*{Section 2: Problem definition}\label{sec:section2}
+
+The ds-server is a simulated version of a list of servers in a data center. The goal of the job client is to schedule 
+jobs efficiently so that it's use of various resources and turnaround time is minimised. The server and client establish a 
+connection with each other through use of custom commands, and there is a back and forth between both the client and the server
+with the client requesting information like the list of servers present, jobs to be scheduled etc., To maximise efficiency, there 
+are various forms of scheduling algorithms that could potentially be used, like the best-fit algorithm which assigns jobs 
+to servers based on a minimising function, the servers resource capacity and currently waiting or running jobs. The best-fit is just one of the algorithms 
+that can be used to schedule jobs efficiently, other algorithms that schedule jobs with varying efficiency are: 
+
+\begin{itemize}
+    \item First Fit 
+    \item Worst Fit 
+    \item Largest Round Robin
+    \item Best Fit 
+\end{itemize}
+
+For this project I will be implementing an algorithm of my own, the performance of which will be compared to the baseline performance 
+of the above mentioned algorithms. The algorithm is designed in such a way that it performs well enough or just good enough so
+that the factors like average turnaround time, resource utilisation and cost of use are all minimised. \\
+
+When running the above scheduling algorithm it was discovered that the best-fit algorithm seemed to perform just good enough 
+in the required criterions. So naturally, I designed my algorithm to operate / look more or less like the best-fit algorithm, 
+with a different approach in how the calling / requesting of information was handled. \\
+
+Specifically, the variations are clear when looking at how server informations were requested. In the best-fit algorithm, 
+server information was requested periodically using the \textbf{GETS Capable} command. And if a server had running or working job, 
+the \textbf{LSTJ} command was used to query the server for the jobs that it was currently busy with. This information is then used to 
+conditionally select the best possible server present in the list of servers available. \\
+
+In contrast, in my own algorithm, I used the \textbf{GETS All} command, which returned the entire list of servers present in a
+given config file. After this, The GETS Avail or GETS Capable commands are used periodically to query the server for 
+servers that were either available or capable of running the given jobs. 
+
+\section*{Section 3: Algorithm description}\label{sec:section3}
+
+Below is an example usage log of my algorithm with the config file present in the ds-sim package called \textbf{ds-sample-config01.xml}.\\
+
+\begin{lstlisting}[language = bash , firstnumber = last, escapeinside={(*@}{@*)}]
+    # ds-sim server 28-Feb, 2023 @ MQ - client-server
+# Server-side simulator started with './ds-server -c /media/shared/majorAssessmentStage2/ds-sim/configs/sample-configs/ds-sample-config01.xml -v all -n'
+# Waiting for connection to port 50000 of IP address 127.0.0.1
+RCVD HELO
+SENT OK
+RCVD AUTH kris
+# Welcome  kris!
+# The system information can be read from 'ds-system.xml'
+SENT OK
+RCVD REDY
+SENT JOBN 37 0 653 3 700 3800
+RCVD GETS All
+SENT DATA 5 124
+RCVD OK
+SENT juju 0 inactive -1 2 4000 16000 0 0
+juju 1 inactive -1 2 4000 16000 0 0
+joon 0 inactive -1 4 16000 64000 0 0
+joon 1 inactive -1 4 16000 64000 0 0
+super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD REDY
+SENT JOBN 37 0 653 3 700 3800
+RCVD GETS Avail 3 700 3800
+SENT DATA 3 124
+RCVD OK
+SENT joon 0 inactive -1 4 16000 64000 0 0
+joon 1 inactive -1 4 16000 64000 0 0
+super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD SCHD 0 joon 0
+t:         37 job     0 (waiting) on # 0 of server joon (booting) SCHEDULED
+SENT OK
+RCVD REDY
+SENT JOBN 60 1 2025 2 1500 2900
+RCVD GETS Avail 2 1500 2900
+SENT DATA 4 124
+RCVD OK
+SENT juju 0 inactive -1 2 4000 16000 0 0
+juju 1 inactive -1 2 4000 16000 0 0
+joon 1 inactive -1 4 16000 64000 0 0
+super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD SCHD 1 juju 0
+t:         60 job     1 (waiting) on # 0 of server juju (booting) SCHEDULED
+SENT OK
+RCVD REDY
+SENT JOBN 96 2 343 2 1500 2100
+RCVD GETS Avail 2 1500 2100
+SENT DATA 3 124
+RCVD OK
+SENT juju 1 inactive -1 2 4000 16000 0 0
+joon 1 inactive -1 4 16000 64000 0 0
+super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD SCHD 2 juju 1
+t:         96 job     2 (waiting) on # 1 of server juju (booting) SCHEDULED
+SENT OK
+RCVD REDY
+t:         97 job     0 on # 0 of server joon RUNNING
+SENT JOBN 101 3 380 2 900 2500
+RCVD GETS Avail 2 900 2500
+SENT DATA 2 124
+RCVD OK
+SENT joon 1 inactive -1 4 16000 64000 0 0
+super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD SCHD 3 joon 1
+t:        101 job     3 (waiting) on # 1 of server joon (booting) SCHEDULED
+SENT OK
+RCVD REDY
+t:        120 job     1 on # 0 of server juju RUNNING
+SENT JOBN 137 4 111 1 100 2000
+RCVD GETS Avail 1 100 2000
+SENT DATA 2 124
+RCVD OK
+SENT joon 0 active 97 1 15300 60200 0 1
+super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD SCHD 4 joon 0
+t:        137 job     4 (running) on # 0 of server joon (active) SCHEDULED
+t:        137 job     4 on # 0 of server joon RUNNING
+SENT OK
+RCVD REDY
+t:        156 job     2 on # 1 of server juju RUNNING
+SENT JOBN 156 5 8 3 2700 2600
+RCVD GETS Avail 3 2700 2600
+SENT DATA 1 124
+RCVD OK
+SENT super-silk 0 inactive -1 16 64000 512000 0 0
+RCVD OK
+SENT .
+RCVD SCHD 5 super-silk 0
+t:        156 job     5 (waiting) on # 0 of server super-silk (booting) SCHEDULED
+SENT OK
+RCVD REDY
+t:        161 job     3 on # 1 of server joon RUNNING
+SENT JOBN 198 6 1074 4 4000 7600
+RCVD GETS Avail 4 4000 7600
+SENT DATA 0 124
+RCVD OK
+SENT .
+RCVD GETS Capable 4 4000 7600
+SENT DATA 3 124
+RCVD OK
+SENT joon 0 active 97 0 15200 58200 0 2
+joon 1 active 161 2 15100 61500 0 1
+super-silk 0 booting 236 13 61300 509400 1 0
+RCVD OK
+SENT .
+RCVD SCHD 6 joon 0
+t:        198 job     6 (waiting) on # 0 of server joon (active) SCHEDULED
+SENT OK
+RCVD REDY
+SENT JOBN 225 7 442 2 500 2100
+RCVD GETS Avail 2 500 2100
+SENT DATA 1 124
+RCVD OK
+SENT joon 1 active 161 2 15100 61500 0 1
+RCVD OK
+SENT .
+RCVD SCHD 7 joon 1
+t:        225 job     7 (running) on # 1 of server joon (active) SCHEDULED
+t:        225 job     7 on # 1 of server joon RUNNING
+SENT OK
+RCVD REDY
+t:        236 job     5 on # 0 of server super-silk RUNNING
+SENT JOBN 249 8 926 1 100 800
+RCVD GETS Avail 1 100 800
+SENT DATA 1 124
+RCVD OK
+SENT super-silk 0 active 236 13 61300 509400 0 1
+RCVD OK
+SENT .
+RCVD SCHD 8 super-silk 0
+t:        249 job     8 (running) on # 0 of server super-silk (active) SCHEDULED
+t:        249 job     8 on # 0 of server super-silk RUNNING
+SENT OK
+RCVD REDY
+t:        257 job     5 on # 0 of server super-silk COMPLETED
+SENT JCPL 257 5 super-silk 0
+RCVD REDY
+t:        303 job     4 on # 0 of server joon COMPLETED
+SENT JCPL 303 4 joon 0
+RCVD REDY
+SENT JOBN 308 9 2010 2 600 1500
+RCVD GETS Avail 2 600 1500
+SENT DATA 1 124
+RCVD OK
+SENT super-silk 0 active 236 15 63900 511200 0 1
+RCVD OK
+SENT .
+RCVD SCHD 9 super-silk 0
+t:        308 job     9 (running) on # 0 of server super-silk (active) SCHEDULED
+t:        308 job     9 on # 0 of server super-silk RUNNING
+SENT OK
+RCVD REDY
+t:        575 job     7 on # 1 of server joon COMPLETED
+SENT JCPL 575 7 joon 1
+RCVD REDY
+t:        642 job     2 on # 1 of server juju COMPLETED
+SENT JCPL 642 2 juju 1
+RCVD REDY
+t:       1073 job     8 on # 0 of server super-silk COMPLETED
+SENT JCPL 1073 8 super-silk 0
+RCVD REDY
+t:       1215 job     1 on # 0 of server juju COMPLETED
+SENT JCPL 1215 1 juju 0
+RCVD REDY
+t:       1232 job     3 on # 1 of server joon COMPLETED
+SENT JCPL 1232 3 joon 1
+RCVD REDY
+t:       1337 job     0 on # 0 of server joon COMPLETED
+t:       1337 job     6 on # 0 of server joon RUNNING
+SENT JCPL 1337 0 joon 0
+RCVD REDY
+t:       1778 job     9 on # 0 of server super-silk COMPLETED
+SENT JCPL 1778 9 super-silk 0
+RCVD REDY
+t:       1897 job     6 on # 0 of server joon COMPLETED
+SENT JCPL 1897 6 joon 0
+RCVD REDY
+SENT NONE
+RCVD QUIT
+SENT QUIT
+# -------------------------------------------------------------------------------------
+# 2 juju servers used with a utilisation of 100.00 at the cost of $0.09
+# 2 joon servers used with a utilisation of 100.00 at the cost of $0.32
+# 1 super-silk servers used with a utilisation of 100.00 at the cost of $0.34
+# ==================================== [ Summary ] ====================================
+# actual simulation end time: 1897, #jobs: 10 (failed 0 times)
+# total #servers used: 5, avg util: 100.00% (ef. usage: 100.00%), total cost: $0.75
+
+\end{lstlisting}
+
+Below is the configuration file used in the above log, \textbf{ds-sample-config01.xml}:
+
+\begin{lstlisting}[language = XSLT , escapeinside={(*@}{@*)}]
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- generated by: Y. C. Lee -->
+<config randomSeed="1024">   
+  <servers>
+	<server type="juju" limit="2" bootupTime="60" hourlyRate="0.2" cores="2" memory="4000" disk="16000" />
+	<server type="joon" limit="2" bootupTime="60" hourlyRate="0.4" cores="4" memory="16000" disk="64000" />
+	<server type="super-silk" limit="1" bootupTime="80" hourlyRate="0.8" cores="16" memory="64000" disk="512000" />
+  </servers>
+  <jobs>
+	<job type="short" minRunTime="1" maxRunTime="300" populationRate="60" />
+	<job type="medium" minRunTime="301" maxRunTime="1800" populationRate="30" />
+	<job type="long" minRunTime="1801" maxRunTime="100000" populationRate="10" />
+  </jobs>
+  <workload type="moderate" minLoad="30" maxLoad="70" />
+  <termination>
+	<condition type="endtime" value="604800" />
+	<condition type="jobcount" value="10" />
+  </termination>
+</config> 
+\end{lstlisting}
+
+
+The algorithm starts of with the regular procedure for establishing a connection between the server and the client. 
+After the client has established a connection with the server, the client uses the \textbf{GETS All} command (line 12) to retrieve 
+all the servers present in the config. This information is stored to help us find the initial core count when using GETS Capable.\\ 
+
+After the client has run the query to ask for the entire list of servers, the client then gets ready for the first job in the global 
+queue. The client queries the server for a list of servers that can run the given job and are currently available and has enough 
+resource capacity to handle the job using the GETS Avail command (line 24). Since this is the first job, all the servers are available at the moment
+so the client finds the best fit server (the one with a core count less than the other servers and at the same time has a core count 
+enough to handle the job) and assigns that server the job. \\
+
+When using the gets avail, it's possible that all servers that can run the given job are busy. In such a case, the GETS Capable command 
+is used, this commmand returns a list of servers that can eventually run the given job. The issue with using GETS Capable is that, 
+it doesn't return the initial core count of the server, this could lead to the servers returned by GETS Capable not having enough 
+cores to run the job. This where we use the server list that we obtained using the GETS All command. We replace the core count 
+with the initial core count using the list of servers. This enables the algorithm to identify what server to assign the job to (the server
+that is best fit).\\
+
+\section*{Section 4: Implementation}\label{sec:section4}
+
+\begin{lstlisting}[language = Java, escapeinside={(*@}{@*)}]
+
+import java.io.*;
+import java.net.*;
+
+public class MyClient {
+
+	public static void main(String[] args) {
+		try {
+
+			Socket socket = new Socket("localhost", 50000);
+			DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+			BufferedReader dis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+			dout.write(("HELO\n").getBytes());
+			dis.readLine();
+
+			String username = System.getProperty("user.name");
+			dout.write(("AUTH " + username + "\n").getBytes());
+			dis.readLine();
+
+			dout.write(("REDY\n").getBytes());
+			dis.readLine();
+\end{lstlisting}
+
+The above piece of code represents how the client establishes a connection with the server, using standard 
+ds-sim commands like HELO, AUTH and REDY. \\
+
+\begin{lstlisting}[language = Java, escapeinside={(*@}{@*)}]
+			String allData = "";
+			dout.write(("GETS All\n").getBytes());
+			allData = dis.readLine();
+			dout.write(("OK\n").getBytes());
+
+			String[] allServers = new String[Integer.parseInt(allData.split(" ")[1])];
+			for (int i = 0; i < allServers.length; i++) {
+				allServers[i] = dis.readLine();
+			}
+
+			dout.write(("OK\n").getBytes());
+			dis.readLine();
+
+\end{lstlisting}
+In the above code, the client uses the GETS All command to retrieve all the servers present. This will help us later 
+when we need to find the initial core count of a server. After this, we use a whie loop to start scheduling jobs to the server.\\
+
+\begin{lstlisting}[language = Java, escapeinside={(*@}{@*)}]
+
+			while (true) {
+
+				dout.write(("REDY\n").getBytes());
+				String jobs = (String) dis.readLine();
+
+				if (jobs.equals("NONE")) {
+					break;
+				}
+
+				String[] jobsIndivData = jobs.split(" ");
+				int jobId = Integer.parseInt(jobsIndivData[2]);
+				int neededCores = Integer.parseInt(jobsIndivData[4]);
+
+				String data = "";
+				if (!jobsIndivData[0].equals("JCPL")) {
+					dout.write(
+							("GETS Avail " + jobsIndivData[4] + " " + jobsIndivData[5] + " " + jobsIndivData[6] + "\n").getBytes());
+					data = dis.readLine();
+					dout.write(("OK\n").getBytes());
+				}
+
+				else {
+					dout.write(("REDY\n").getBytes());
+					dis.readLine();
+					continue;
+				}
+\end{lstlisting}
+In the above code, we start an inifinite while loop with a condition within the while loop that says if the variable 
+\textbf{jobs} is equal to \textbf{NONE}, the loop breaks. This ensures that if there are no more jobs then the client will eventually
+send the \textbf{QUIT} command. Or if the jobs array does not contain \textbf{JCPL} the GETS Avail command is used. If the jobs array 
+does contain JCPL, the continue keyword is used, which skips the rest of the code in the loop and esentially restarts the loop, moving on 
+to the next set of jobs. When the Gets Avail command is used the server responds with a list of servers that are available and can 
+run a job with the specific resource capacity and core count.\\
+
+\begin{lstlisting}[language = Java, escapeinside={(*@}{@*)}]
+				int capableCalled = 0;
+
+				if (data.split(" ")[1].equals("0")) {
+					dis.readLine();
+					dout.write(
+							("GETS Capable " + jobsIndivData[4] + " " + jobsIndivData[5] + " " + jobsIndivData[6] + "\n").getBytes());
+					data = dis.readLine();
+					dout.write(("OK\n").getBytes());
+					capableCalled = 1;
+				}
+
+				int serversPresentNo = Integer.parseInt(data.split(" ")[1]);
+
+				String[] serverList = new String[serversPresentNo];
+				for (int i = 0; i < serversPresentNo; i++) {
+					serverList[i] = dis.readLine();
+				}
+
+				if (capableCalled == 1) {
+					for (int i = 0; i < serverList.length; i++) {
+						String server1Name = serverList[i].split(" ")[0];
+						String server1Id = serverList[i].split(" ")[1];
+						for (int j = 0; j < allServers.length; j++) {
+							String server2Name = allServers[j].split(" ")[0];
+							String server2Id = allServers[j].split(" ")[1];
+
+							if (server1Name.equals(server2Name) && server1Id.equals(server2Id)) {
+								serverList[i] = allServers[j];
+							}
+						}
+					}
+				}
+
+\end{lstlisting}
+In the above set of code, we initialise a boolean variable called \textbf{capableCalled}. The value of this variable is 
+set to 1 if the command GETS Capable is called, which on the other hand, is only called if GETS Avail does not return any servers. 
+When the client uses GETS Capable, it is known that all the servers are busy, therefore, the core count on the servers returned 
+are not the initial core counts, which is what we want, because it might be possible that the core count for the servers returned 
+from the GETS Capable command are not sufficient.  \\ 
+
+If capableCalled is set to 1, the client then iterates over the list of servers returned by GETS Capable and replaces it with 
+servers that were returned using GETS Avail. Of course, the names and IDs of the servers are compared before the list of servers returned
+by GETS Capable is altered. \\
+
+
+\begin{lstlisting}[language = Java, escapeinside={(*@}{@*)}]
+				String bestServerName = "";
+				String bestServerId = "";
+				int bestServerCores = 0;
+
+				bestServerName = "";
+				bestServerId = "";
+				bestServerCores = Integer.MAX_VALUE;
+
+				for (int i = 0; i < serversPresentNo; i++) {
+					String currentSserverName = serverList[i].split(" ")[0];
+					String currentServerId = serverList[i].split(" ")[1];
+					int currentServerCores = Integer.parseInt(serverList[i].split(" ")[4]);
+
+					if (currentServerCores >= neededCores && currentServerCores <= bestServerCores) {
+						bestServerName = currentSserverName;
+						bestServerId = currentServerId;
+						bestServerCores = currentServerCores;
+						break;
+					}
+				}
+\end{lstlisting}
+The above set of code finds the best possible server present in the list of servers returned by either the GETS Avail or 
+GETS Capable command. The server with the right amount of cores (the server with cores higher or equal to the amount of cores
+needed for the job and lower than the core count of the rest of the servers returned) is selected. The client uses for loop to 
+iterate over the server to compare each server core count. \\
+
+\begin{lstlisting}[language = Java, escapeinside={(*@}{@*)}]
+
+				dout.write(("OK\n").getBytes());
+				dis.readLine();
+
+				if (jobsIndivData[0].equals("JOBN")) {
+					String schedCommand = "SCHD " + jobId + " " + bestServerName + " " + bestServerId;
+					dout.write((schedCommand + "\n").getBytes());
+					dis.readLine();
+				}
+
+			}
+			dout.write(("QUIT\n").getBytes());
+			dis.readLine();
+			dout.flush();
+
+			dout.close();
+			dis.close();
+			socket.close();
+		} catch (
+
+		Exception e) {
+			System.out.println(e);
+		}
+	}
+}
+\end{lstlisting}
+
+And finally, once the most fit server for the given job is found, the client uses the \textbf{SCHD} command to assign the 
+given job to said server. And when all the jobs have been completed and the loop is broken, the client uses the 
+QUIT command to exit the simulation. 
+
+\section*{Section 5: Evaluation}\label{sec:section5}
+
+\includegraphics*[scale=0.5]{1.png}\\
+\includegraphics*[scale=0.5]{2.png}\\
+\includegraphics*[scale=0.5]{3.png}
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+        \textbf{Algorithms} & \textbf{Average Turnaround Time} & \textbf{Average Resource Utilisation} & \textbf{Average Total Rental Cost} \\ \hline
+        \textbf{FF} & 1833.27 & 73.3 & 614.81 \\ \hline
+        \textbf{BF} & 2383.93 & 68.93 & 617 \\ \hline
+        \textbf{FFQ} & 2563.93 & 72.74 & 628.65 \\ \hline
+        \textbf{BFQ} & 2407.4 & 68.8 & 625.37 \\ \hline
+        \textbf{WFQ} & 10820.47 & 65.18 & 633.71 \\ \hline
+        \textbf{Mine} & 1363.53 & 73.81 & 610.8 \\ \hline
+    \end{tabular}
+\end{table}
+
+My algorithm, for the most part has worked well enough. On average it has scored high enough in all the tests. Although there are 
+a few yellow results in the mix, indicating that the results could've been slightly better. The good news is that there are no 
+red results, which would've indicated that the algorithm performed poorly. \\
+
+\section*{Section 6: Conclusion}\label{sec:section6}
+Well the algorithm has, for the most part, performed well in all tests, but it has not been perfected. Although, achieving perfection in
+in all three criterions is an impossible and contradicting task. As perfecting one aspect of the algorithm could potentially mean 
+having a shortcoming in another. 
+
+\section*{Section 7: References}\label{sec:section7}
+
+Link to Github: https://github.com/krispaulbabu/majorAssessmentStage2
+
+\end{document}
